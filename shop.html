@@ -143,6 +143,10 @@
         </div>
       </div>
     </div>
+
+
+
+
     <header id="header" class="site-header fixed-top border-bottom">
       <div class="container-lg">
         <div class="row">
@@ -152,8 +156,12 @@
                 <use xlink:href="#navbar-icon"></use>
               </svg>
             </button>
+
+
+
+
             <a href="index.html" class="navbar-brand order-2 order-lg-2 d-flex d-lg-none">
-              <img src="images/main-logo.png" alt="Logo">
+              <img src="images/logo text only white.png" alt="Logo">
             </a>
             <div class="offcanvas offcanvas-end order-3" tabindex="-1" id="bdNavbar" aria-labelledby="bdNavbarOffcanvasLabel">
               <div class="offcanvas-body">
@@ -163,26 +171,29 @@
                 <div class="navbar-collapse order-1 order-lg-1" id="navbarMenu">
                   <ul class="navbar-nav mr-auto">
                     <li class="nav-item">
-                      <a class="nav-link text-light pe-4" href="about.html"> About </a>
+                      <a class="nav-link text-light me-4" href="about.html"> About </a>
                     </li>
                     <li class="nav-item">
-                      <a class="nav-link text-light pe-4" href="#"> Shop </a>
+                      <a class="nav-link text-light me-4" href="shop.html"> Shop </a>
                     </li>
                     <li class="nav-item dropdown">
                       <a class="nav-link me-4 dropdown-toggle text-light" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">More</a>
                       <ul class="dropdown-menu">
+                        <!-- COMMENTED OUT UNTIL NEEDED <li>
+                          <a href="blog.html" class="dropdown-item">Blog</a>
+                        </li>
                         <li>
                           <a href="checkout.html" class="dropdown-item">Checkout</a>
-                        </li>
+                        </li>-->
                         <li>
-                          <a href="faqs.html" class="dropdown-item">Faqs</a>
+                          <a href="order_now.html" class="dropdown-item">Faqs</a>
                         </li>
                       </ul>
-                    </li>
+                    </li>                    
                   </ul>
                 </div>
                 <a href="index.html" class="navbar-brand order-2 order-lg-2 d-none d-lg-flex">
-                  <img src="images/logo (text only).png" alt="Logo">
+                  <img src="images/logo text only white.png" alt="Logo">
                 </a>
                 <!-- HIDING THE LOGIN, CART, AND SEARCH UNTIL WEBSITE IS FURTHER DEVELOPED <ul class="user-items list-unstyled d-none d-lg-flex justify-content-end align-items-center order-3 flex-grow-1 gap-5 m-0">
                   <li>
@@ -214,8 +225,12 @@
         </div>
       </div>
     </header>
+
+
+
+
     <section class="hero-section position-relative jarallax">
-      <img src="images/hero-image.jpg" alt="tea cup" class="jarallax-img">
+      <img src="images/shop_header.jpg" alt="tea cup" class="jarallax-img">
       <div class="hero-content position-absolute d-flex justify-content-center align-items-center text-center">
         <div class="container">
           <div class="row">
@@ -238,10 +253,10 @@
           <main class="col-md-12">
             <div class="filter-shop d-flex justify-content-between mb-5">
               <div class="showing-product">
-                <p>Showing 1–9 of 55 results</p>
+                <p>Showing 1–4 of 4 results</p>
               </div>
               <div class="sort-by">
-                <select id="input-sort" class="form-control" data-filter-sort="" data-filter-order="">
+                <!-- FIGURE OUT HOW TO UTILIZE THIS ALREADY EXISTING CODE <select id="input-sort" class="form-control" data-filter-sort="" data-filter-order="">
                   <option value="">Default Sorting</option>
                   <option value="">Name (A - Z)</option>
                   <option value="">Name (Z - A)</option>
@@ -251,7 +266,7 @@
                   <option value="">Rating (Lowest)</option>
                   <option value="">Model (A - Z)</option>
                   <option value="">Model (Z - A)</option>
-                </select>
+                </select> -->
               </div>
             </div>
             <div class="product-content">
@@ -259,11 +274,11 @@
                 <div class="col-lg-3 col-md-6 mb-5">
                   <div class="product-item mx-auto">
                     <div class="image-holder text-center mb-2">
-                      <img src="images/product-item1.jpg" alt="tea" class="img-fluid">
+                      <a href="classic_candles.html" class="text-dark"><img src="images/basic_candle.jpg" alt="tea" class="img-fluid"></a>
                     </div>
                     <div class="product-info text-center">
                       <h3 class="fst-italic m-0">
-                        <a href="single-product.html" class="text-dark">Candle #1</a>
+                        <a href="classic_candles.html" class="text-dark">Classic Candles</a><br><strong>SOLD OUT</strong>
                       </h3>
                       <div class="product-price text-primary fw-medium">$00.00</div>
                     </div>
@@ -272,11 +287,11 @@
                 <div class="col-lg-3 col-md-6 mb-5">
                   <div class="product-item mx-auto">
                     <div class="image-holder text-center mb-2">
-                      <img src="images/product-item2.jpg" alt="tea" class="img-fluid">
+                      <a href="artistic_candles.html" class="text-dark"><img src="images/exotic_candle.jpg" alt="tea" class="img-fluid"></a>
                     </div>
                     <div class="product-info text-center">
                       <h3 class="fst-italic m-0">
-                        <a href="single-product.html" class="text-dark">Candle #2</a>
+                        <a href="artistic_candles.html" class="text-dark">Artistic Candles <br><strong>COMING SOON</strong></a>
                       </h3>
                       <div class="product-price text-primary fw-medium">$00.00</div>
                     </div>
@@ -285,11 +300,11 @@
                 <div class="col-lg-3 col-md-6 mb-5">
                   <div class="product-item mx-auto">
                     <div class="image-holder text-center mb-2">
-                      <img src="images/product-item3.jpg" alt="tea" class="img-fluid">
+                      <a href="wax_melts.html" class="text-dark"><img src="images/wax_melts.jpg" alt="tea" class="img-fluid"></a>
                     </div>
                     <div class="product-info text-center">
                       <h3 class="fst-italic m-0">
-                        <a href="single-product.html" class="text-dark">Candle #3</a>
+                        <a href="wax_melts.html" class="text-dark">Wax Melts<br><strong>COMING SOON</strong></a>
                       </h3>
                       <div class="product-price text-primary fw-medium">$00.00</div>
                     </div>
@@ -298,11 +313,11 @@
                 <div class="col-lg-3 col-md-6 mb-5">
                   <div class="product-item mx-auto">
                     <div class="image-holder text-center mb-2">
-                      <img src="images/product-item4.jpg" alt="tea" class="img-fluid">
+                      <a href="essential_oils.html" class="text-dark"><img src="images/essential_oils.jpg" alt="tea" class="img-fluid"></a>
                     </div>
                     <div class="product-info text-center">
                       <h3 class="fst-italic m-0">
-                        <a href="single-product.html" class="text-dark">Candle #4</a>
+                        <a href="essential_oils.html" class="text-dark">Essential Oils<br><strong>COMING SOON</strong></a>
                       </h3>
                       <div class="product-price text-primary fw-medium">$00.00</div>
                     </div>
@@ -451,16 +466,16 @@
           <div class="col-lg-3 col-md-6 mb-5">
             <div class="footer-menu">
               <div class="footer-intro mb-2">
-                <h4 class="fs-2 fst-italic pb-2">Know Our Wing Tea <!-- change--></h4>
-                <p>We are the best tea supplier in the town. Our main motive is to make our beautiful people stay fit & healthy everytime.</p>
-                <form id="form" class="mt-4 position-relative">
+                <h4 class="fs-2 fst-italic pb-2">Know Our Mission <!-- change--></h4>
+                <p>We are the best local candle supplier in town. Our main motive is to bring comfort and tranquility to your home through our specially scented products.</p>
+                <!-- <form id="form" class="mt-4 position-relative">
                   <input type="text" name="email" placeholder="Your Email Address" class="border-0 border-bottom bg-transparent w-100">
                   <a href="#">
                     <svg class="send svg-primary position-absolute" width="20" height="20">
-                    <!-- add validation -->  <use xlink:href="#send"></use>
+                      <use xlink:href="#send"></use>
                     </svg>
                   </a>
-                </form>
+                </form> -->
               </div>
             </div>
           </div>
@@ -488,12 +503,12 @@
               <h5 class="widget-title fst-italic">Help</h5>
               <ul class="menu-list list-unstyled">
                 <li class="menu-item fw-medium pb-2">
-                  <a href="faqs.html" class="item-anchor">Faqs</a>
-                </li>
-                <li class="menu-item fw-medium pb-2">
-                  <a href="checkout.html" class="item-anchor">Checkout</a>
+                  <a href="order_now.html" class="item-anchor">Place Order</a>
                 </li>
                 <!-- HIDDEN TEMPORARILY UNTIL WE HAVE THE PROPER THINGS NEEDED <li class="menu-item fw-medium pb-2">
+                  <a href="checkout.html" class="item-anchor">Checkout</a>
+                </li>
+                <li class="menu-item fw-medium pb-2">
                   <a href="#" class="item-anchor">Contact</a>
                 </li> -->
               </ul>
@@ -504,20 +519,20 @@
               <h5 class="widget-title fst-italic">Social Links</h5>
               <div class="social-links">
                 <ul class="list-unstyled">
+                  <!-- <li class="fw-medium pb-2">
+                    <a href="#" target="_blank">Facebook </a>
+                  </li> -->
                   <li class="fw-medium pb-2">
-                    <a href="#">Facebook </a>
-                  </li>
-                  <li class="fw-medium pb-2">
-                    <a href="#">Instagram </a>
+                    <a href="https://www.instagram.com/kash_infusions?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank">Instagram </a>
                   </li>
                   <!-- HIDDEN DUE TO NOT BEING IN USE <li class="fw-medium pb-2">
                     <a href="#">Pinterest </a>
                   </li>
                   <li class="fw-medium pb-2">
                     <a href="#">Twitter </a>
-                  </li> -->
+                  </li>
                   <li class="fw-medium pb-2">
-                    <a href="#">Youtube </a>
+                    <a href="#" target="_blank">Youtube </a> -->
                   </li>
                 </ul>
               </div>
@@ -530,6 +545,8 @@
           <div class="row justify-content-between">
             <div class="col-md-10">
               <p>©2023 Template designed by <a href="https://templatesjungle.com" target="_blank" class="fw-medium">TemplatesJungle</a>
+              </p>
+              <p>©2023 Further developed by <a href="https://skyuju.com" target="_blank" class="fw-medium">SkyVerse</a>
               </p>
             </div>
             <div class="col-md-2">
@@ -544,6 +561,10 @@
         </div>
       </div>
     </footer>
+
+
+
+
     <script src="js/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
