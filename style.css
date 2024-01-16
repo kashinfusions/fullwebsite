@@ -758,12 +758,3 @@ a {
   box-shadow: var(--bs-light);
 }
 
-.checkbox {
-  transform : scale(150%);
-  margin: 15px;
-}
-
-.checkboxlabel {
-  font-size: larger;
-  font-weight: bolder;
-}
