@@ -201,7 +201,7 @@
                           <a href="checkout.html" class="dropdown-item">Checkout</a>
                         </li>-->
                         <li>
-                          <a href="order_now.html" class="dropdown-item">Faqs</a>
+                          <a href="order_now.html" class="dropdown-item">Place Order</a>
                         </li>
                       </ul>
                     </li>                    
@@ -317,22 +317,22 @@
                 <strong>Call us at +16018706128</strong> or reach us at <a href="mailto:kashvision1@gmail.com" class="text-primary fw-medium">kashvision1@gmail.com.com</a> by email for any further questions or concerns. You can order with us using the form below.
               </p>
               <div id="error"></div>
-              <form id="faqs-form" class="form-group flex-wrap">
+              <form id="faqs-form" class="form-group flex-wrap" action="form.js" method="get">
                 <div class="form-input col-lg-12 d-flex mb-3">
                   <input type="text" name="name" placeholder="Name" minlength="2" maxlength="20" class="form-control ps-3 me-3" id="name">
                   <input type="email" name="email" placeholder="Email" class="form-control ps-3" id="email">
                 </div>
                 <div class="col-lg-12 mb-3">
-                  <input type="tel" name="phone" placeholder="Phone Number" class="form-control ps-3" required maxlength="13" minlength="10" id="phone">
+                  <input type="tel" name="phone" placeholder="Phone Number" class="form-control ps-3"  maxlength="13" minlength="10" id="phone">
                 </div>
                 <div class="col-lg-12 mb-3">
-                  <input type="text" name="address" placeholder="Address" class="form-control ps-3" required minlength="10" id="address">
+                  <input type="text" name="address" placeholder="Address" class="form-control ps-3"  minlength="10" id="address">
                 </div>
                 <div class="col-lg-12 mb-3">
-                  <textarea placeholder="Item(s)" class="form-control ps-3" rows="8" required minlength="10" id="items"></textarea>
+                  <textarea placeholder="Item(s)" class="form-control ps-3" rows="8" minlength="10" id="items"></textarea>
                 </div>
                 <div class="d-grid">
-                  <button type="submit" class="btn btn-primary btn-lg text-uppercase btn-rounded-none" action="form.php" id="submit">Place</button>
+                  <button type="submit" class="btn btn-primary btn-lg text-uppercase btn-rounded-none" id="submit">Place</button>
                 </div>
               </form>
             </div>
