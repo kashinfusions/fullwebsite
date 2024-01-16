@@ -317,8 +317,9 @@
                 <strong>Call us at +16018706128</strong> or reach us at <a href="mailto:kashvision1@gmail.com" class="text-primary fw-medium">kashvision1@gmail.com.com</a> by email for any further questions or concerns. You can order with us using the form below.
               </p>
               <div id="error"></div>
-              <form id="faqs-form" class="form-group flex-wrap" action="form.js" method="get">
+              <form action="https://api.web3forms.com/submit" method="POST" id="faqs-form" class="form-group flex-wrap" >
                 <div class="form-input col-lg-12 d-flex mb-3">
+                  <input type="hidden" name="access_key" value="3732e9b4-2c85-4af1-a81e-6bbff60e5bf9">
                   <input type="text" name="name" placeholder="Name" minlength="2" maxlength="20" class="form-control ps-3 me-3" id="name">
                   <input type="email" name="email" placeholder="Email" class="form-control ps-3" id="email">
                 </div>
@@ -454,6 +455,6 @@
     <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
     <script src="js/plugins.js"></script>
     <script src="js/script.js"></script>
-    <script defer src="form.js"></script>
+    <script src="https://web3forms.com/client/script.js" async defer></script>
   </body>
 </html>
