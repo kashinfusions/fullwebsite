@@ -314,7 +314,7 @@
           <div class="col-lg-5 col-md-6">
             <div class="inquiry-item">
               <p>
-                <strong>Call us at +16018706128</strong> or reach us at <a href="mailto:kashvision1@gmail.com" class="text-primary fw-medium">kashvision1@gmail.com.com</a> by email for any further questions or concerns. You can order with us using the form below.
+                <strong>Call us at +16018706128</strong> or reach us at <a href="mailto:kashvision1@gmail.com" class="text-primary fw-medium">kashvision1@gmail.com</a> by email for any further questions or concerns. You can order with us using the form below.
               </p>
               <div id="error"></div>
               <form action="https://api.web3forms.com/submit" method="POST" id="faqs-form" class="form-group flex-wrap" >
@@ -331,6 +331,17 @@
                 </div>
                 <div class="col-lg-12 mb-3">
                   <textarea placeholder="Item(s)" class="form-control ps-3" rows="8" minlength="10" id="items"></textarea>
+                </div>
+                <div class="col-lg-12 mb-3">
+                  <h5>What is your method of payment?</h5> <!-- Figure out why this isn't appearing on the email-->
+                  <label class="checkboxlabel">Cash</label>
+                  <input type="checkbox" class="checkbox">
+                  <br>
+                  <label class="checkboxlabel">Card</label>
+                  <input type="checkbox" class="checkbox">
+                  <br>
+                  <label class="checkboxlabel">Cashapp/Paypal</label>
+                  <input type="checkbox" class="checkbox">
                 </div>
                 <div class="d-grid">
                   <button type="submit" class="btn btn-primary btn-lg text-uppercase btn-rounded-none" id="submit">Place</button>
