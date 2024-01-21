@@ -339,28 +339,28 @@
               <form id="faqs-form" class="form-group flex-wrap" action="https://api.web3forms.com/submit" method="post">
                 <div class="form-input col-lg-12 d-flex mb-3">
                   <input type="hidden" name="access_key" value="3732e9b4-2c85-4af1-a81e-6bbff60e5bf9">
-                  <input type="text" name="name" placeholder="Name" minlength="2" maxlength="20" class="form-control ps-3 me-3" id="name">
+                  <input type="text" name="name" placeholder="Name" minlength="2" maxlength="20" class="form-control ps-3 me-3" id="name" required>
                   <input type="email" name="email" placeholder="Email" class="form-control ps-3" id="email">
                 </div>
                 <div class="col-lg-12 mb-3">
-                  <input type="tel" name="phone" placeholder="Phone Number" class="form-control ps-3"  maxlength="13" minlength="10" id="phone">
+                  <input type="tel" name="phone" placeholder="Phone Number" class="form-control ps-3"  maxlength="13" minlength="10" id="phone" required>
                 </div>
                 <div class="col-lg-12 mb-3">
-                  <input type="text" name="address" placeholder="Address" class="form-control ps-3"  minlength="10" id="address">
+                  <input type="text" name="address" placeholder="Address" class="form-control ps-3"  minlength="10" id="address" required>
                 </div>
                 <div class="col-lg-12 mb-3">
-                  <textarea placeholder="Item(s)" class="form-control ps-3" rows="8" minlength="10" id="items"></textarea>
+                  <textarea placeholder="Item(s)" name="items" class="form-control ps-3" rows="8" minlength="10" id="items" required></textarea>
                 </div>
-                <div class="col-lg-12 mb-3">
+                <div class="col-lg-12 mb-3" name="payment">
                   <h5>What is your method of payment?</h5> <!-- Figure out why this isn't appearing on the email-->
-                  <label class="checkboxlabel">Cash</label>
-                  <input type="checkbox" class="checkbox">
+                  <label class="radiolabel">Cash</label>
+                  <input type="radio" class="radio">
                   <br>
-                  <label class="checkboxlabel">Card</label>
-                  <input type="checkbox" class="checkbox">
+                  <label class="radiolabel">Card</label>
+                  <input type="radio" class="radio">
                   <br>
-                  <label class="checkboxlabel">Cashapp/Paypal</label>
-                  <input type="checkbox" class="checkbox">
+                  <label class="radiolabel">Cashapp/Paypal</label>
+                  <input type="radio" class="radio">
                 </div>
                 <div class="d-grid">
                   <button type="submit" class="btn btn-primary btn-lg text-uppercase btn-rounded-none" id="submit">Place</button>
@@ -486,6 +486,5 @@
     <script src="js/plugins.js"></script>
     <script src="js/script.js"></script>
     <script src="https://web3forms.com/client/script.js" async defer></script>
-    <script defer src="form.js"></script>
   </body>
 </html>
