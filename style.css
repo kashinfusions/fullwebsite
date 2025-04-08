@@ -767,3 +767,17 @@ a {
   font-size: larger;
   font-weight: bolder;
 }
+
+.select-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem; /* Adds spacing between items */
+}
+
+.select-item {
+  padding: 0.5rem 1rem; /* Adds padding around each item */
+  background-color: #f8f9fa; /* Optional: Light background for better visibility */
+  border-radius: 5px; /* Optional: Rounded corners */
+  font-size: 1rem; /* Adjust font size */
+  text-align: center;
+}
