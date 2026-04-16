@@ -315,31 +315,7 @@
                 <strong class="text-primary display-6">$8.00 - $13.00</strong>
               </div>
               <p>Clean burning soy candles crafted with all natural essential oils. Single, double, and triple wick candles with soy and wooden wicks. These candles provides a beautiful variety of scents for any space in your home. Made with safe and natural dyes.</p>
-              <p><i>*Scent add on is $0.50</i></p>
-              <!-- USE WHEN CART AND LOGIN IS AVAILABLE <div class="product-action">
-                <div class="product-quantity">
-                  <div class="input-group product-qty mb-3">
-                    <span class="input-group-btn">
-                      <button type="button" class="quantity-left-minus btn btn-number text-center border" data-type="minus" data-field="">
-                        <svg class="minus" width="20" height="20">
-                          <use xlink:href="#minus"></use>
-                        </svg>
-                      </button>
-                    </span>
-                    <input type="text" id="quantity" name="quantity" class="form-control input-number text-center border" value="1" min="1" max="100">
-                    <span class="input-group-btn">
-                      <button type="button" class="quantity-right-plus btn btn-number text-center border" data-type="plus" data-field="">
-                        <svg class="plus" width="20" height="20">
-                          <use xlink:href="#plus"></use>
-                        </svg>
-                      </button>
-                    </span>
-                  </div>
-                  <button type="submit" name="add" id="add-to-cart" class="btn btn-lg btn-dark mb-3">
-                    <span>Add to cart</span>
-                  </button>
-                </div>
-              </div> -->
+              <p><i>*Scent, color, and herb add ons are $0.50 each</i></p>
               <div class="meta-product py-2">
                 <div class="meta-item d-flex align-items-baseline">
                   <h4 class="item-title fs-5 pe-2">Stock:</h4>
@@ -347,15 +323,23 @@
                     <li data-value="S" class="select-item">In stock</li>
                   </ul>
                 </div>
-              <div class="meta-product py-2">
                 <div class="meta-item d-flex align-items-baseline">
-                  <h4 class="item-title fs-5 pe-2">Pricing:</h4>
-                  <ul class="select-list list-unstyled d-flex">
-                    <li data-value="S" class="select-item">Scented tin jar: $8 ||  Glass jar with scent: $11 || Glass jar with scent and color: $12</li>
-                  </ul>
+                  <h4 class="item-title fs-5 pe-2">Color:</h4>
+                  <select aria-label="Select a scent" class="scent-select-title">
+                    <option class="scent-select-option">None</option>
+                    <option class="scent-select-option">Red (+ $0.50)</option>
+                    <option class="scent-select-option">Orange (+ $0.50)</option>
+                    <option class="scent-select-option">Yellow (+ $0.50)</option>
+                    <option class="scent-select-option">Green (+ $0.50)</option>
+                    <option class="scent-select-option">Blue (+ $0.50)</option>
+                    <option class="scent-select-option">Purple (+ $0.50)</option>
+                    <option class="scent-select-option">Pink (+ $0.50)</option>
+                    <option class="scent-select-option">Brown (+ $0.50)</option>
+                    <option class="scent-select-option">Black (+ $0.50)</option>
+                  </select>
                 </div>
                 <div class="meta-item d-flex align-items-baseline">
-                  <h4 class="item-title fs-5 pe-2">Scents:</h4>
+                  <h4 class="item-title fs-5 pe-2">Scent:</h4>
                   <select aria-label="Select a scent" class="scent-select-title">
                     <option class="scent-select-option">Unscented</option>
                     <option class="scent-select-option">Very Vanilla (+ $0.50)</option>
@@ -368,10 +352,45 @@
                     <option class="scent-select-option">Cranberry Prosecco (+ $0.50)</option>
                   </select>
                 </div>
-              </div>
-              <!-- <div class="add-to-cart-button">
-                <button type="button">Add to Cart</button>
-              </div> -->
+                <div class="meta-item d-flex align-items-baseline">
+                  <h4 class="item-title fs-5 pe-2">Herb:</h4>
+                  <select aria-label="Select a scent" class="scent-select-title">
+                    <option class="scent-select-option">None</option>
+                    <option class="scent-select-option">Gomphrena (+ $0.50)</option>
+                    <option class="scent-select-option">Colorful Chrysanthemum (+ $0.50)</option>
+                    <option class="scent-select-option">Rose Petals (+ $0.50)</option>
+                    <option class="scent-select-option">Don’t Forget Me (+ $0.50)</option>
+                    <option class="scent-select-option">Lily (+ $0.50)</option>
+                    <option class="scent-select-option">Red Plum (+ $0.50)</option>
+                    <option class="scent-select-option">Lavender (+ $0.50)</option>
+                    <option class="scent-select-option">Jasmine (+ $0.50)</option>
+                    <option class="scent-select-option">Rose (+ $0.50)</option>
+                  </select>
+                </div>
+            </div>
+            <div class="product-action"> <!-- Update theming -->
+              <div class="product-quantity">
+                <div class="input-group product-qty mb-3">
+                  <span class="input-group-btn">
+                    <button type="button" class="quantity-left-minus btn btn-number text-center border" data-type="minus" data-field="">
+                      <svg class="minus" width="20" height="20">
+                        <use xlink:href="#minus"></use>
+                      </svg>
+                    </button>
+                  </span>
+                  <input type="text" id="quantity" name="quantity" class="form-control input-number text-center border" value="1" min="1" max="100">
+                  <span class="input-group-btn">
+                    <button type="button" class="quantity-right-plus btn btn-number text-center border" data-type="plus" data-field="">
+                      <svg class="plus" width="20" height="20">
+                        <use xlink:href="#plus"></use>
+                      </svg>
+                    </button>
+                  </span>
+                </div>
+                <button type="submit" name="add" id="add-to-cart" class="btn btn-lg btn-dark mb-3">
+                  <span>Add to cart</span>
+                </button>
+                </div>
             </div>
           </div>
         </div>
