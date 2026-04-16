@@ -785,3 +785,53 @@ a {
 .inline-a {
   color: #87a9bc;
 }
+
+.promo-header {
+  display: block;
+  margin: 0 0 25px 0;
+  font-size: 50px;
+  /* background: #87A9BC;
+  background: radial-gradient(circle, rgba(135, 169, 188, 1) 0%, rgba(166, 210, 237, 1) 100%); */
+  text-align: center;
+}
+
+/* @keyframes blink {
+  0%, 50%, 100% {
+    opacity: 1;
+  }
+  25%, 75% {
+    opacity: 0;
+  }
+}
+
+.blink-text {
+  animation: blink 2s infinite;
+  color: white;
+} */
+
+.ad {
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 100%;
+}
+
+.scroll1,
+.scroll2 {
+  display: inline-block;
+  animation: scroll 5s linear infinite;
+  margin-right: 0;
+}
+
+.scroll2 {
+  animation-delay: 2.5s;
+}
+
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-100vw);
+  }
+}
