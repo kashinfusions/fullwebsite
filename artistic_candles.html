@@ -20,6 +20,7 @@
     <!-- script
     ================================================== -->
     <script src="js/modernizr.js"></script>
+    <script src="js/api-config.js"></script>
     <script src="kashinfusions-backend/backend.js"></script>
   </head>
   <body data-bs-spy="scroll" data-bs-target="#navbar" data-bs-root-margin="0px 0px -40%" data-bs-smooth-scroll="true" tabindex="0">
@@ -313,7 +314,7 @@
                 </div>
               </div>
               <div class="product-price pt-3 pb-3">
-                <strong class="text-primary display-6">$15.00</strong>
+                <strong class="text-primary display-6" id="product-price-display">Select options to see price</strong>
               </div>
               <p>Handmade soy candles with various dimensions, colors, and scents. Made with safe and natural dyes.</p>
               <div class="meta-product py-2">
@@ -325,31 +326,31 @@
                 </div>
                 <div class="meta-item d-flex align-items-baseline">
                   <h4 class="item-title fs-5 pe-2">Color:</h4>
-                  <select aria-label="Select a scent" class="scent-select-title">
-                    <option class="scent-select-option">None</option>
-                    <option class="scent-select-option">Red</option>
-                    <option class="scent-select-option">Orange</option>
-                    <option class="scent-select-option">Yellow</option>
-                    <option class="scent-select-option">Green</option>
-                    <option class="scent-select-option">Blue</option>
-                    <option class="scent-select-option">Purple</option>
-                    <option class="scent-select-option">Pink</option>
-                    <option class="scent-select-option">Brown</option>
-                    <option class="scent-select-option">Black</option>
+                  <select aria-label="Select a color" class="scent-select-title" id="color-select">
+                    <option class="scent-select-option" value="none">None</option>
+                    <option class="scent-select-option" value="red">Red (+ $0.50)</option>
+                    <option class="scent-select-option" value="orange">Orange (+ $0.50)</option>
+                    <option class="scent-select-option" value="yellow">Yellow (+ $0.50)</option>
+                    <option class="scent-select-option" value="green">Green (+ $0.50)</option>
+                    <option class="scent-select-option" value="blue">Blue (+ $0.50)</option>
+                    <option class="scent-select-option" value="purple">Purple (+ $0.50)</option>
+                    <option class="scent-select-option" value="pink">Pink (+ $0.50)</option>
+                    <option class="scent-select-option" value="brown">Brown (+ $0.50)</option>
+                    <option class="scent-select-option" value="black">Black (+ $0.50)</option>
                   </select>
                 </div>
                 <div class="meta-item d-flex align-items-baseline">
                   <h4 class="item-title fs-5 pe-2">Scent:</h4>
-                  <select aria-label="Select a scent" class="scent-select-title">
-                    <option class="scent-select-option">Unscented</option>
-                    <option class="scent-select-option">Very Vanilla</option>
-                    <option class="scent-select-option">Jamaica me crazy</option>
-                    <option class="scent-select-option">Grapefruit Mango</option>
-                    <option class="scent-select-option">Custom Lavender & Vanilla</option>
-                    <option class="scent-select-option">Strawberries and Cream</option>
-                    <option class="scent-select-option">Pink Watermelon Lemonade</option>
-                    <option class="scent-select-option">Caribbean Teakwood</option>
-                    <option class="scent-select-option">Cranberry Prosecco</option>
+                  <select aria-label="Select a scent" class="scent-select-title" id="scent-select">
+                    <option class="scent-select-option" value="0">Unscented</option>
+                    <option class="scent-select-option" value="1">Very Vanilla (+ $0.50)</option>
+                    <option class="scent-select-option" value="2">Jamaica me crazy (+ $0.50)</option>
+                    <option class="scent-select-option" value="3">Grapefruit Mango (+ $0.50)</option>
+                    <option class="scent-select-option" value="4">Custom Lavender & Vanilla (+ $0.50)</option>
+                    <option class="scent-select-option" value="5">Strawberries and Cream (+ $0.50)</option>
+                    <option class="scent-select-option" value="6">Pink Watermelon Lemonade (+ $0.50)</option>
+                    <option class="scent-select-option" value="7">Caribbean Teakwood (+ $0.50)</option>
+                    <option class="scent-select-option" value="8">Cranberry Prosecco (+ $0.50)</option>
                   </select>
                 </div>
                 <div class="meta-item d-flex align-items-baseline">

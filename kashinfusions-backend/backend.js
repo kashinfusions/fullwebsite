@@ -1,21 +1,72 @@
 console.log("Backend file connected");
 
+// ==================== PRODUCT PRICING CONFIGURATIONS ====================
+
+// Define pricing for each product type
+const productPricingConfigs = {
+  classic_candles: {
+    productName: "Classic Candles",
+    basePrice: 0, // Size is required, so no base
+    sizeOptions: {
+      "Select": 0,
+      "8oz Tin (+ $7.00)": 7.00,
+      "9oz Glass (+ $9.00)": 9.00,
+      "10oz Glass (+ $10.00)": 10.00,
+      "12oz Glass (+ $10.00)": 10.00
+    },
+    addonPrice: 0.50,
+    requiresSize: true
+  },
+  artistic_candles: {
+    productName: "Artistic Candles",
+    basePrice: 15.00,
+    sizeOptions: {}, // No size option
+    addonPrice: 0.50,
+    requiresSize: false
+  },
+  wax_melts: {
+    productName: "Wax Melts",
+    basePrice: 0,
+    sizeOptions: {
+      "Select": 0,
+      "Sampler (+ $4.00)": 4.00,
+      "Single Melt (+ $4.50)": 4.50,
+      "Pack of 6 (+ $5.50)": 5.50
+    },
+    addonPrice: 0.50,
+    requiresSize: true
+  },
+  essential_oils: {
+    productName: "Essential Oils",
+    basePrice: 12.00,
+    sizeOptions: {
+      "5ml (+ $12.00)": 12.00,
+      "10ml (+ $18.00)": 18.00
+    },
+    addonPrice: 0, // Only scent, no color/herb add-ons
+    requiresSize: true
+  }
+};
+
+// Determine current product from page filename
+function getCurrentProduct() {
+  const filename = window.location.pathname.split('/').pop().replace('.html', '');
+  return filename || 'classic_candles';
+}
+
+// Get the pricing config for the current page
+function getPricingConfig() {
+  const product = getCurrentProduct();
+  return productPricingConfigs[product] || productPricingConfigs.classic_candles;
+}
+
+// Pricing configuration for customizations
+const pricingConfig = getPricingConfig();
+
 // ==================== GLOBAL STATE ====================
 let allProducts = [];
 let selectedProduct = null;
 let cart = [];
-
-// Pricing configuration for customizations
-const pricingConfig = {
-  sizeOptions: {
-    "Select": 0,
-    "8oz Tin (+ $7.00)": 7.00,
-    "9oz Glass (+ $9.00)": 9.00,
-    "10oz Glass (+ $10.00)": 10.00,
-    "12oz Glass (+ $10.00)": 10.00
-  },
-  addonPrice: 0.50 // Color, Scent (except Unscented), Herb all cost $0.50
-};
 
 // ==================== PRODUCT INITIALIZATION ====================
 
@@ -72,25 +123,31 @@ function getCurrentSelections() {
 
 // Calculate total price based on selections
 function calculatePrice() {
+  const config = getPricingConfig();
   const selections = getCurrentSelections();
   let totalPrice = 0;
   
-  // Add size/material price
-  totalPrice += pricingConfig.sizeOptions[selections.size] || 0;
+  // Add base price
+  totalPrice += config.basePrice;
   
-  // Add color price (if not "None")
-  if (selections.color !== "none") {
-    totalPrice += pricingConfig.addonPrice;
+  // Add size/material price (if applicable)
+  if (Object.keys(config.sizeOptions).length > 0) {
+    totalPrice += config.sizeOptions[selections.size] || 0;
   }
   
-  // Add scent price (all scents except "0" - Unscented cost $0.50)
-  if (selections.scent !== "0") {
-    totalPrice += pricingConfig.addonPrice;
+  // Add color price (if not "None" and addon price applies)
+  if (config.addonPrice > 0 && selections.color !== "none") {
+    totalPrice += config.addonPrice;
   }
   
-  // Add herb price (if not "None")
-  if (selections.herb !== "none") {
-    totalPrice += pricingConfig.addonPrice;
+  // Add scent price (all scents except "0" - Unscented cost addon price)
+  if (config.addonPrice > 0 && selections.scent !== "0") {
+    totalPrice += config.addonPrice;
+  }
+  
+  // Add herb price (if not "None" and addon price applies)
+  if (config.addonPrice > 0 && selections.herb !== "none") {
+    totalPrice += config.addonPrice;
   }
   
   return totalPrice;
@@ -98,18 +155,23 @@ function calculatePrice() {
 
 // Update the price display on the page
 function updatePriceDisplay() {
+  const config = getPricingConfig();
   const price = calculatePrice();
   const priceDisplay = document.getElementById("product-price-display");
   
   if (priceDisplay) {
-    if (price === 0) {
+    // Check if required selections are missing
+    const selections = getCurrentSelections();
+    const missingSizeSelection = config.requiresSize && selections.size === "Select";
+    
+    if (price === 0 || missingSizeSelection) {
       priceDisplay.textContent = "Select options to see price";
     } else {
       priceDisplay.textContent = "$" + price.toFixed(2);
     }
   }
   
-  console.log("💰 Price updated to: $" + price.toFixed(2));
+  console.log("💰 Current config:", config.productName, "| Price: $" + price.toFixed(2));
 }
 
 // Set up event listeners for all dropdowns
@@ -134,6 +196,8 @@ function setupDropdownListeners() {
 
 // Add item to cart
 function addToCart() {
+  const config = getPricingConfig();
+  
   if (!selectedProduct) {
     console.error("❌ No product selected");
     return;
@@ -143,9 +207,9 @@ function addToCart() {
   const quantity = parseInt(document.getElementById("quantity")?.value || 1);
   const finalPrice = calculatePrice();
   
-  // Validate that user selected a size
-  if (selections.size === "Select") {
-    alert("Please select a size/material before adding to cart");
+  // Validate that user selected a size if required
+  if (config.requiresSize && selections.size === "Select") {
+    alert("Please select a size before adding to cart");
     console.warn("⚠️ Size not selected");
     return;
   }
