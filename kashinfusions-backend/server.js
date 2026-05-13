@@ -1,18 +1,25 @@
+require('dotenv').config();
+
 const express = require("express");
 const mysql = require("mysql2");
+const path = require("path");
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
+const NODE_ENV = process.env.NODE_ENV || 'development';
 
 // Middleware (VERY IMPORTANT for POST/PUT)
 app.use(express.json());
 
+// Serve static files from parent directory
+app.use(express.static(path.join(__dirname, "..")));
+
 // 🔗 MySQL connection
 const db = mysql.createConnection({
-  host: "localhost",
-  user: "sylkyla",
-  password: "Gu!doM!sta5466!",
-  database: "kashinfusions"
+  host: process.env.DB_HOST || "localhost",
+  user: process.env.DB_USER || "sylkyla",
+  password: process.env.DB_PASSWORD || "Gu!doM!sta5466!",
+  database: process.env.DB_NAME || "kashinfusions"
 });
 
 // Connect to DB
@@ -22,6 +29,16 @@ db.connect((err) => {
     return;
   }
   console.log("✅ Connected to MySQL database");
+});
+
+
+// =======================
+// 🏠 ROOT ROUTE
+// =======================
+
+// Serve index.html at root
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "..", "index.html"));
 });
 
 
@@ -136,5 +153,9 @@ app.delete("/products/:id", (req, res) => {
 // =======================
 
 app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
+  console.log(`🚀 Server running on port ${PORT}`);
+  console.log(`📍 Environment: ${NODE_ENV}`);
+  if (NODE_ENV === 'development') {
+    console.log(`🌐 Local URL: http://localhost:${PORT}`);
+  }
 });

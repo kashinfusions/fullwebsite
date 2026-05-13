@@ -20,6 +20,7 @@
     <!-- script
     ================================================== -->
     <script src="js/modernizr.js"></script>
+    <script src="js/api-config.js"></script>
     <script src="kashinfusions-backend/backend.js"></script>
   </head>
   <body data-bs-spy="scroll" data-bs-target="#navbar" data-bs-root-margin="0px 0px -40%" data-bs-smooth-scroll="true" tabindex="0">
@@ -313,7 +314,7 @@
                 </div>
               </div>
               <div class="product-price pt-3 pb-3">
-                <strong class="text-primary display-6">$7.00 - $11.50</strong>
+                <strong class="text-primary display-6" id="product-price-display">Select options to see price</strong>
               </div>
               <p>Clean burning soy candles crafted with all natural essential oils. Single, double, and triple wick candles with soy and wooden wicks. These candles provides a beautiful variety of scents for any space in your home. Made with safe and natural dyes.</p>
               <p><i>*Scent, color, and herb add ons are $0.50 each</i></p>
@@ -326,27 +327,27 @@
                 </div>
                 <div class="meta-item d-flex align-items-baseline">
                   <h4 class="item-title fs-5 pe-2">Material & Size:</h4>
-                  <select aria-label="Select a scent" class="scent-select-title" id="size-select-dropdown">
+                  <select aria-label="Select a size" class="scent-select-title" id="size-select-dropdown">
                     <option class="scent-select-option" value="Select" id="select-option-1">Select</option>
-                    <option class="scent-select-option">8oz Tin (+ $7.00)</option>
-                    <option class="scent-select-option">9oz Glass (+ $9.00)</option>
-                    <option class="scent-select-option">10oz Glass (+ $10.00)</option>
-                    <option class="scent-select-option">12oz Glass (+ $10.00)</option>
+                    <option class="scent-select-option" value="8oz Tin (+ $7.00)">8oz Tin (+ $7.00)</option>
+                    <option class="scent-select-option" value="9oz Glass (+ $9.00)">9oz Glass (+ $9.00)</option>
+                    <option class="scent-select-option" value="10oz Glass (+ $10.00)">10oz Glass (+ $10.00)</option>
+                    <option class="scent-select-option" value="12oz Glass (+ $10.00)">12oz Glass (+ $10.00)</option>
                   </select>
                 </div>
                 <div class="meta-item d-flex align-items-baseline">
                   <h4 class="item-title fs-5 pe-2">Color:</h4>
-                  <select aria-label="Select a scent" class="scent-select-title">
-                    <option class="scent-select-option">None</option>
-                    <option class="scent-select-option">Red (+ $0.50)</option>
-                    <option class="scent-select-option">Orange (+ $0.50)</option>
-                    <option class="scent-select-option">Yellow (+ $0.50)</option>
-                    <option class="scent-select-option">Green (+ $0.50)</option>
-                    <option class="scent-select-option">Blue (+ $0.50)</option>
-                    <option class="scent-select-option">Purple (+ $0.50)</option>
-                    <option class="scent-select-option">Pink (+ $0.50)</option>
-                    <option class="scent-select-option">Brown (+ $0.50)</option>
-                    <option class="scent-select-option">Black (+ $0.50)</option>
+                  <select aria-label="Select a color" class="scent-select-title" id="color-select">
+                    <option class="scent-select-option" value="none">None</option>
+                    <option class="scent-select-option" value="red">Red (+ $0.50)</option>
+                    <option class="scent-select-option" value="orange">Orange (+ $0.50)</option>
+                    <option class="scent-select-option" value="yellow">Yellow (+ $0.50)</option>
+                    <option class="scent-select-option" value="green">Green (+ $0.50)</option>
+                    <option class="scent-select-option" value="blue">Blue (+ $0.50)</option>
+                    <option class="scent-select-option" value="purple">Purple (+ $0.50)</option>
+                    <option class="scent-select-option" value="pink">Pink (+ $0.50)</option>
+                    <option class="scent-select-option" value="brown">Brown (+ $0.50)</option>
+                    <option class="scent-select-option" value="black">Black (+ $0.50)</option>
                   </select>
                 </div>
                 <div class="meta-item d-flex align-items-baseline">
@@ -365,17 +366,17 @@
                 </div>
                 <div class="meta-item d-flex align-items-baseline">
                   <h4 class="item-title fs-5 pe-2">Herb:</h4>
-                  <select aria-label="Select a scent" class="scent-select-title">
-                    <option class="scent-select-option">None</option>
-                    <option class="scent-select-option">Gomphrena (+ $0.50)</option>
-                    <option class="scent-select-option">Colorful Chrysanthemum (+ $0.50)</option>
-                    <option class="scent-select-option">Rose Petals (+ $0.50)</option>
-                    <option class="scent-select-option">Don’t Forget Me (+ $0.50)</option>
-                    <option class="scent-select-option">Lily (+ $0.50)</option>
-                    <option class="scent-select-option">Red Plum (+ $0.50)</option>
-                    <option class="scent-select-option">Lavender (+ $0.50)</option>
-                    <option class="scent-select-option">Jasmine (+ $0.50)</option>
-                    <option class="scent-select-option">Rose (+ $0.50)</option>
+                  <select aria-label="Select an herb" class="scent-select-title" id="herb-select">
+                    <option class="scent-select-option" value="none">None</option>
+                    <option class="scent-select-option" value="gomphrena">Gomphrena (+ $0.50)</option>
+                    <option class="scent-select-option" value="chrysanthemum">Colorful Chrysanthemum (+ $0.50)</option>
+                    <option class="scent-select-option" value="rose-petals">Rose Petals (+ $0.50)</option>
+                    <option class="scent-select-option" value="forget-me-not">Don't Forget Me (+ $0.50)</option>
+                    <option class="scent-select-option" value="lily">Lily (+ $0.50)</option>
+                    <option class="scent-select-option" value="red-plum">Red Plum (+ $0.50)</option>
+                    <option class="scent-select-option" value="lavender">Lavender (+ $0.50)</option>
+                    <option class="scent-select-option" value="jasmine">Jasmine (+ $0.50)</option>
+                    <option class="scent-select-option" value="rose">Rose (+ $0.50)</option>
                   </select>
                 </div>
             </div>
