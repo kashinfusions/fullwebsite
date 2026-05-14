@@ -6,6 +6,7 @@ console.log("Backend file connected");
 const productPricingConfigs = {
   classic_candles: {
     productName: "Classic Candles",
+    productImage: "images/classic_candles.jpg",
     basePrice: 0, // Size is required, so no base
     sizeOptions: {
       "Select": 0,
@@ -19,6 +20,7 @@ const productPricingConfigs = {
   },
   artistic_candles: {
     productName: "Artistic Candles",
+    productImage: "images/artistic_candles.jpg",
     basePrice: 15.00,
     sizeOptions: {}, // No size option
     addonPrice: 0.50,
@@ -26,6 +28,7 @@ const productPricingConfigs = {
   },
   wax_melts: {
     productName: "Wax Melts",
+    productImage: "images/wax_melts.jpg",
     basePrice: 0,
     sizeOptions: {
       "Select": 0,
@@ -38,6 +41,7 @@ const productPricingConfigs = {
   },
   essential_oils: {
     productName: "Essential Oils",
+    productImage: "images/essential_oils.jpg",
     basePrice: 12.00,
     sizeOptions: {
       "5ml (+ $12.00)": 12.00,
@@ -192,6 +196,146 @@ function setupDropdownListeners() {
   console.log("✅ Dropdown listeners set up");
 }
 
+// ==================== CART PERSISTENCE ====================
+
+// Save cart to localStorage
+function saveCartToStorage() {
+  localStorage.setItem('kashinfusions_cart', JSON.stringify(cart));
+  console.log("💾 Cart saved to storage");
+}
+
+// Load cart from localStorage
+function loadCartFromStorage() {
+  const savedCart = localStorage.getItem('kashinfusions_cart');
+  if (savedCart) {
+    try {
+      cart = JSON.parse(savedCart);
+      console.log("📂 Cart loaded from storage:", cart);
+    } catch (error) {
+      console.error("❌ Error loading cart from storage:", error);
+      cart = [];
+    }
+  }
+}
+
+// Clear cart storage (used on checkout)
+function clearCartStorage() {
+  localStorage.removeItem('kashinfusions_cart');
+  cart = [];
+  console.log("🗑️ Cart cleared");
+}
+
+// ==================== CART DISPLAY ====================
+
+// Render cart items in the offcanvas cart
+function renderCart() {
+  const cartBody = document.querySelector("#offcanvasCart .offcanvas-body");
+  if (!cartBody) return;
+  
+  // Clear previous content
+  cartBody.innerHTML = '';
+  
+  if (cart.length === 0) {
+    cartBody.innerHTML = `
+      <div class="text-center py-5">
+        <h5 class="text-muted">Your cart is empty</h5>
+        <p class="text-body-secondary">Add items to get started!</p>
+      </div>
+    `;
+    return;
+  }
+  
+  const cartTotal = getCartTotal();
+  
+  let html = `
+    <div class="order-md-last">
+      <h2 class="mb-4">Your Cart</h2>
+      <div class="cart-items-container" style="max-height: 400px; overflow-y: auto; margin-bottom: 20px;">
+  `;
+  
+  // Add each cart item
+  cart.forEach((item, index) => {
+    const selections = item.selections;
+    let description = [];
+    
+    if (selections.size && selections.size !== "Select") {
+      description.push(selections.size.split('(')[0].trim());
+    }
+    if (selections.color && selections.color !== "none") {
+      description.push(selections.color);
+    }
+    if (selections.scent && selections.scent !== "0" && selections.scent !== "Unscented") {
+      description.push('Scent: ' + selections.scent);
+    }
+    if (selections.herb && selections.herb !== "none") {
+      description.push(selections.herb);
+    }
+    
+    html += `
+      <div class="card mb-3" style="border: 1px solid #ddd;">
+        <div class="card-body p-3">
+          <div class="row">
+            <div class="col-md-4 col-sm-4">
+              <img src="${item.productImage}" alt="${item.name}" class="img-fluid rounded" style="width: 100%; height: auto;">
+            </div>
+            <div class="col-md-8 col-sm-8">
+              <h5 class="card-title mb-2">${item.name}</h5>
+              <p class="text-body-secondary mb-2" style="font-size: 0.9em;">
+                ${description.length > 0 ? description.join(' • ') : 'Standard options'}
+              </p>
+              <div class="d-flex justify-content-between mb-2">
+                <span><strong>Price per unit:</strong> $${item.pricePerUnit.toFixed(2)}</span>
+              </div>
+              <div class="d-flex justify-content-between mb-3">
+                <span><strong>Quantity:</strong> ${item.quantity}</span>
+                <span><strong>Subtotal:</strong> $${item.totalPrice.toFixed(2)}</span>
+              </div>
+              <button type="button" class="btn btn-sm btn-outline-danger w-100" onclick="removeFromCart(${index})">
+                Remove from Cart
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  });
+  
+  html += `
+      </div>
+      <hr class="my-3">
+      <div class="cart-summary mb-4">
+        <div class="d-flex justify-content-between mb-3">
+          <h4>Cart Total</h4>
+          <h4 class="text-primary">$${cartTotal.toFixed(2)}</h4>
+        </div>
+        <p class="text-body-secondary text-center mb-3">Items in cart: <strong>${cart.length}</strong></p>
+      </div>
+      <a href="checkout.html" class="w-100 btn btn-primary btn-lg">Continue to Checkout</a>
+    </div>
+  `;
+  
+  cartBody.innerHTML = html;
+  console.log("🛒 Cart rendered with " + cart.length + " items");
+}
+
+// Remove item from cart
+function removeFromCart(index) {
+  const removedItem = cart[index];
+  cart.splice(index, 1);
+  saveCartToStorage();
+  renderCart();
+  updateCartBadge();
+  console.log("🗑️ Removed item:", removedItem.name, "| Cart now has", cart.length, "items");
+}
+
+// Update cart badge count
+function updateCartBadge() {
+  const badges = document.querySelectorAll("#offcanvasCart .badge");
+  badges.forEach(badge => {
+    badge.textContent = cart.length;
+  });
+}
+
 // ==================== CART MANAGEMENT ====================
 
 // Add item to cart
@@ -216,7 +360,8 @@ function addToCart() {
   
   const cartItem = {
     id: selectedProduct.id,
-    name: selectedProduct.name,
+    name: config.productName,
+    productImage: config.productImage,
     quantity: quantity,
     pricePerUnit: finalPrice,
     totalPrice: finalPrice * quantity,
@@ -226,6 +371,9 @@ function addToCart() {
   
   cart.push(cartItem);
   
+  // Save cart to localStorage
+  saveCartToStorage();
+  
   // Log final price and cart item
   console.log("✅ Item added to cart!");
   console.log("📦 Final Price: $" + finalPrice.toFixed(2));
@@ -233,8 +381,12 @@ function addToCart() {
   console.log("🛒 Total Cart Items:", cart.length);
   console.log("🛒 Cart Contents:", cart);
   
+  // Update cart display
+  renderCart();
+  updateCartBadge();
+  
   // Visual feedback
-  alert(`Added to cart!\n\nPrice: $${finalPrice.toFixed(2)} x ${quantity} = $${(finalPrice * quantity).toFixed(2)}`);
+  alert(`✅ Added to cart!\n\n${config.productName}\nPrice: $${finalPrice.toFixed(2)} x ${quantity} = $${(finalPrice * quantity).toFixed(2)}`);
   
   // Reset quantity
   const quantityInput = document.getElementById("quantity");
@@ -257,6 +409,9 @@ function getCartTotal() {
 
 // Initialize when DOM is ready
 document.addEventListener("DOMContentLoaded", () => {
+  // Load cart from storage first
+  loadCartFromStorage();
+  
   initializeProducts();
   setupDropdownListeners();
   
@@ -265,6 +420,10 @@ document.addEventListener("DOMContentLoaded", () => {
   if (addToCartBtn) {
     addToCartBtn.addEventListener("click", addToCart);
   }
+  
+  // Render initial cart state
+  renderCart();
+  updateCartBadge();
   
   console.log("✅ Backend initialized and ready");
 });
