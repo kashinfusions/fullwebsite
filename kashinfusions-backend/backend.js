@@ -67,6 +67,22 @@ function getPricingConfig() {
 // Pricing configuration for customizations
 const pricingConfig = getPricingConfig();
 
+// Create a local fallback product object when API loading fails
+function getFallbackProduct() {
+  const slug = getCurrentProduct();
+  const config = getPricingConfig();
+
+  return {
+    id: slug,
+    name: config.productName,
+    price: config.basePrice,
+    description: `${config.productName} - custom order`,
+    image_url: config.productImage,
+    stock: 999,
+    slug
+  };
+}
+
 // ==================== GLOBAL STATE ====================
 let allProducts = [];
 let selectedProduct = null;
@@ -86,13 +102,30 @@ async function initializeProducts() {
     
     allProducts = await response.json();
     console.log("✅ Products loaded:", allProducts);
-    
-    // Auto-populate first product if available
+
+    // Auto-populate the current product if available, otherwise use first or fallback
     if (allProducts.length > 0) {
-      loadProduct(allProducts[0].id);
+      const currentSlug = getCurrentProduct();
+      const matchedProduct = allProducts.find(p => p.slug === currentSlug || `${p.id}` === currentSlug || p.name?.toLowerCase().includes(currentSlug.replace(/_/g, ' ')));
+      if (matchedProduct) {
+        loadProduct(matchedProduct.id);
+      } else {
+        console.warn("⚠️ Current product not found in API response, using first available product.");
+        loadProduct(allProducts[0].id);
+      }
+    } else {
+      console.warn("⚠️ No products returned from API; using fallback product.");
+      const fallback = getFallbackProduct();
+      allProducts = [fallback];
+      selectedProduct = fallback;
+      console.log("📦 Fallback product selected:", selectedProduct);
     }
   } catch (error) {
     console.error("❌ Error loading products:", error);
+    const fallback = getFallbackProduct();
+    allProducts = [fallback];
+    selectedProduct = fallback;
+    console.log("📦 Fallback product loaded:", selectedProduct);
   }
 }
 
@@ -101,8 +134,11 @@ function loadProduct(productId) {
   selectedProduct = allProducts.find(p => p.id === productId);
   
   if (!selectedProduct) {
-    console.error("Product not found");
-    return;
+    console.warn("⚠️ Product not found; using fallback product.");
+    selectedProduct = getFallbackProduct();
+    if (!allProducts.some(p => p.id === selectedProduct.id)) {
+      allProducts.push(selectedProduct);
+    }
   }
   
   console.log("📦 Selected product:", selectedProduct);
