@@ -14,13 +14,23 @@ app.use(express.json());
 // Serve static files from parent directory
 app.use(express.static(path.join(__dirname, "..")));
 
+
+const urlDB = `mysql://root:MPwOIxnYNwIpdqRYmmmRXQPCuOCIxfFB@mysql.railway.internal:3306/railway`;
+
 // 🔗 MySQL connection
-const db = mysql.createConnection({
-  host: process.env.DB_HOST || "localhost",
-  user: process.env.DB_USER || "sylkyla",
-  password: process.env.DB_PASSWORD || "Gu!doM!sta5466!",
-  database: process.env.DB_NAME || "kashinfusions"
-});
+const dbConfig = {
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME
+};
+
+if (!dbConfig.user || !dbConfig.password || !dbConfig.database) {
+  console.error("Missing required database environment variables. Set DB_USER, DB_PASSWORD, and DB_NAME.");
+  process.exit(1);
+}
+
+const db = mysql.createConnection(urlDB);
 
 // Connect to DB
 db.connect((err) => {
