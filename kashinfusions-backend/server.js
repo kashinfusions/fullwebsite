@@ -19,10 +19,10 @@ const urlDB = `mysql://root:MPwOIxnYNwIpdqRYmmmRXQPCuOCIxfFB@mysql.railway.inter
 
 // 🔗 MySQL connection
 const dbConfig = {
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME
+  host: process.env.DB_HOST || "mysql.railway.internal",
+  user: process.env.DB_USER || "root",
+  password: process.env.DB_PASSWORD || "MPwOIxnYNwIpdqRYmmmRXQPCuOCIxfFB",
+  database: process.env.DB_NAME || "railway"
 };
 
 if (!dbConfig.user || !dbConfig.password || !dbConfig.database) {
