@@ -15,22 +15,22 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, "..")));
 
 
-const urlDB = `mysql://root:MPwOIxnYNwIpdqRYmmmRXQPCuOCIxfFB@mysql.railway.internal:3306/railway`;
+// Use Railway / environment database connection first
+const databaseUrl = process.env.DATABASE_URL || process.env.DB_URL || process.env.MYSQL_URL;
 
-// 🔗 MySQL connection
-const dbConfig = {
-  host: process.env.DB_HOST || "mysql.railway.internal",
-  user: process.env.DB_USER || "root",
-  password: process.env.DB_PASSWORD || "MPwOIxnYNwIpdqRYmmmRXQPCuOCIxfFB",
-  database: process.env.DB_NAME || "railway"
+const dbConfig = databaseUrl ? databaseUrl : {
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME
 };
 
-if (!dbConfig.user || !dbConfig.password || !dbConfig.database) {
-  console.error("Missing required database environment variables. Set DB_USER, DB_PASSWORD, and DB_NAME.");
+if (!databaseUrl && (!dbConfig.user || !dbConfig.password || !dbConfig.database)) {
+  console.error("Missing required database environment variables. Set DB_USER, DB_PASSWORD, and DB_NAME, or provide DATABASE_URL/DB_URL.");
   process.exit(1);
 }
 
-const db = mysql.createConnection(urlDB);
+const db = mysql.createConnection(dbConfig);
 
 // Connect to DB
 db.connect((err) => {
