@@ -1,1 +1,1 @@
-web: node kashinfusions-backend/server.js
+web: cd kashinfusions-backend && npm start
