@@ -83,6 +83,16 @@ function getFallbackProduct() {
   };
 }
 
+function applyFallbackProduct() {
+  const fallback = getFallbackProduct();
+  allProducts = [fallback];
+  selectedProduct = fallback;
+  console.warn("⚠️ Using local pricing fallback for this product page.");
+  console.log("📦 Fallback product loaded:", selectedProduct);
+  updatePriceDisplay();
+  return fallback;
+}
+
 // ==================== GLOBAL STATE ====================
 let allProducts = [];
 let selectedProduct = null;
@@ -97,35 +107,29 @@ async function initializeProducts() {
       ? API_CONFIG.endpoint('/products')
       : '/products';
     
-    const response = await fetch(apiUrl);
-    if (!response.ok) throw new Error("Failed to fetch products");
-    
-    allProducts = await response.json();
+    const response = await fetch(apiUrl, { cache: 'no-store' });
+    if (!response.ok) throw new Error(`Products endpoint returned ${response.status}`);
+
+    const data = await response.json();
+    if (!Array.isArray(data) || data.length === 0) {
+      throw new Error("No products returned");
+    }
+
+    allProducts = data;
     console.log("✅ Products loaded:", allProducts);
 
     // Auto-populate the current product if available, otherwise use first or fallback
-    if (allProducts.length > 0) {
-      const currentSlug = getCurrentProduct();
-      const matchedProduct = allProducts.find(p => p.slug === currentSlug || `${p.id}` === currentSlug || p.name?.toLowerCase().includes(currentSlug.replace(/_/g, ' ')));
-      if (matchedProduct) {
-        loadProduct(matchedProduct.id);
-      } else {
-        console.warn("⚠️ Current product not found in API response, using first available product.");
-        loadProduct(allProducts[0].id);
-      }
+    const currentSlug = getCurrentProduct();
+    const matchedProduct = allProducts.find(p => p.slug === currentSlug || `${p.id}` === currentSlug || p.name?.toLowerCase().includes(currentSlug.replace(/_/g, ' ')));
+    if (matchedProduct) {
+      loadProduct(matchedProduct.id);
     } else {
-      console.warn("⚠️ No products returned from API; using fallback product.");
-      const fallback = getFallbackProduct();
-      allProducts = [fallback];
-      selectedProduct = fallback;
-      console.log("📦 Fallback product selected:", selectedProduct);
+      console.warn("⚠️ Current product not found in API response, using first available product.");
+      loadProduct(allProducts[0].id);
     }
   } catch (error) {
-    console.error("❌ Error loading products:", error);
-    const fallback = getFallbackProduct();
-    allProducts = [fallback];
-    selectedProduct = fallback;
-    console.log("📦 Fallback product loaded:", selectedProduct);
+    console.warn("⚠️ Products API unavailable, using local pricing fallback:", error.message || error);
+    applyFallbackProduct();
   }
 }
 
@@ -142,6 +146,7 @@ function loadProduct(productId) {
   }
   
   console.log("📦 Selected product:", selectedProduct);
+  updatePriceDisplay();
 }
 
 // ==================== DYNAMIC PRICING ====================
