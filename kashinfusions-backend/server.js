@@ -1,63 +1,86 @@
-require('dotenv').config();
+require("dotenv").config();
 
 const express = require("express");
+const cors = require("cors");
 const mysql = require("mysql2");
 const path = require("path");
+const stripeLib = require("stripe");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const NODE_ENV = process.env.NODE_ENV || 'development';
+const NODE_ENV = process.env.NODE_ENV || "development";
+const allowedOrigins = [
+  "http://127.0.0.1:5501",
+  "http://localhost:5501",
+  "http://127.0.0.1",
+  "http://localhost"
+];
 
-// Middleware (VERY IMPORTANT for POST/PUT)
-app.use(express.json());
-
-// Serve static files from parent directory
-app.use(express.static(path.join(__dirname, "..")));
-
-
-// Use Railway / environment database connection first
-const databaseUrl = process.env.DATABASE_URL || process.env.DB_URL || process.env.MYSQL_URL;
-
-const dbConfig = databaseUrl ? databaseUrl : {
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME
-};
-
-if (!databaseUrl && (!dbConfig.user || !dbConfig.password || !dbConfig.database)) {
-  console.error("Missing required database environment variables. Set DB_USER, DB_PASSWORD, and DB_NAME, or provide DATABASE_URL/DB_URL.");
-  process.exit(1);
-}
-
-const db = mysql.createConnection(dbConfig);
-
-// Connect to DB
-db.connect((err) => {
-  if (err) {
-    console.error("Database connection failed:", err);
-    return;
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  if (origin && allowedOrigins.includes(origin)) {
+    res.header("Access-Control-Allow-Origin", origin);
+    res.header("Access-Control-Allow-Credentials", "true");
   }
-  console.log("✅ Connected to MySQL database");
+  res.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(204);
+  }
+
+  next();
 });
 
+app.use(cors({ origin: allowedOrigins, credentials: true }));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, "..")));
 
-// =======================
-// 🏠 ROOT ROUTE
-// =======================
+const databaseUrl = process.env.DATABASE_URL || process.env.DB_URL || process.env.MYSQL_URL;
+let db = null;
+let dbConfigured = false;
 
-// Serve index.html at root
+if (databaseUrl) {
+  dbConfigured = true;
+  db = mysql.createConnection(databaseUrl);
+} else {
+  const hasDbCreds = process.env.DB_HOST && process.env.DB_USER && process.env.DB_PASSWORD && process.env.DB_NAME;
+  if (hasDbCreds) {
+    dbConfigured = true;
+    db = mysql.createConnection({
+      host: process.env.DB_HOST,
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME
+    });
+  }
+}
+
+if (dbConfigured) {
+  db.connect((err) => {
+    if (err) {
+      console.warn("⚠️ Database connection failed, continuing in checkout-only mode:", err.message || err);
+      dbConfigured = false;
+      return;
+    }
+    console.log("✅ Connected to MySQL database");
+  });
+} else {
+  console.warn("⚠️ Database not configured. Continuing in checkout-only mode.");
+}
+
+const stripe = process.env.STRIPE_SECRET_KEY ? stripeLib(process.env.STRIPE_SECRET_KEY) : null;
+
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "..", "index.html"));
 });
 
-
-// =======================
-// 📦 PRODUCT ROUTES
-// =======================
-
-// ✅ GET all active products
 app.get("/products", (req, res) => {
+  if (!dbConfigured || !db) {
+    return res.json([]);
+  }
+
   const sql = `
     SELECT id, name, price, description, image_url, stock
     FROM products
@@ -74,11 +97,12 @@ app.get("/products", (req, res) => {
   });
 });
 
-
-// ✅ GET single product
 app.get("/products/:id", (req, res) => {
-  const { id } = req.params;
+  if (!dbConfigured || !db) {
+    return res.status(503).json({ error: "Database is not configured." });
+  }
 
+  const { id } = req.params;
   const sql = "SELECT * FROM products WHERE id = ?";
 
   db.query(sql, [id], (err, results) => {
@@ -91,11 +115,12 @@ app.get("/products/:id", (req, res) => {
   });
 });
 
-
-// ✅ CREATE product
 app.post("/products", (req, res) => {
-  const { name, price, description, image_url, stock } = req.body;
+  if (!dbConfigured || !db) {
+    return res.status(503).json({ error: "Database is not configured." });
+  }
 
+  const { name, price, description, image_url, stock } = req.body;
   const sql = `
     INSERT INTO products (name, price, description, image_url, stock)
     VALUES (?, ?, ?, ?, ?)
@@ -107,47 +132,42 @@ app.post("/products", (req, res) => {
       return res.status(500).send("Error adding product");
     }
 
-    res.json({
-      message: "Product added!",
-      id: result.insertId
-    });
+    res.json({ message: "Product added!", id: result.insertId });
   });
 });
 
-
-// ✅ UPDATE product
 app.put("/products/:id", (req, res) => {
+  if (!dbConfigured || !db) {
+    return res.status(503).json({ error: "Database is not configured." });
+  }
+
   const { id } = req.params;
   const { name, price, description, image_url, stock, is_active } = req.body;
-
   const sql = `
     UPDATE products
     SET name = ?, price = ?, description = ?, image_url = ?, stock = ?, is_active = ?
     WHERE id = ?
   `;
 
-  db.query(
-    sql,
-    [name, price, description, image_url, stock, is_active, id],
-    (err, result) => {
-      if (err) {
-        console.error(err);
-        return res.status(500).send("Error updating product");
-      }
-
-      res.json({ message: "Product updated!" });
+  db.query(sql, [name, price, description, image_url, stock, is_active, id], (err) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send("Error updating product");
     }
-  );
+
+    res.json({ message: "Product updated!" });
+  });
 });
 
-
-// ✅ DELETE (soft delete)
 app.delete("/products/:id", (req, res) => {
-  const { id } = req.params;
+  if (!dbConfigured || !db) {
+    return res.status(503).json({ error: "Database is not configured." });
+  }
 
+  const { id } = req.params;
   const sql = "UPDATE products SET is_active = FALSE WHERE id = ?";
 
-  db.query(sql, [id], (err, result) => {
+  db.query(sql, [id], (err) => {
     if (err) {
       console.error(err);
       return res.status(500).send("Error deleting product");
@@ -157,15 +177,77 @@ app.delete("/products/:id", (req, res) => {
   });
 });
 
+app.post("/create-checkout-session", async (req, res) => {
+  const cartItems = req.body.cartItems || req.body.items || [];
+  const customerDetails = req.body.customerDetails || {};
 
-// =======================
-// 🚀 START SERVER
-// =======================
+  if (!cartItems.length) {
+    return res.status(400).json({ error: "Your cart is empty." });
+  }
 
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
-  console.log(`📍 Environment: ${NODE_ENV}`);
-  if (NODE_ENV === 'development') {
-    console.log(`🌐 Local URL: http://localhost:${PORT}`);
+  if (!stripe) {
+    return res.status(503).json({ error: "Stripe is not configured. Set STRIPE_SECRET_KEY to enable payments." });
+  }
+
+  const line_items = cartItems.map((item) => {
+    const quantity = Number(item.quantity || 1);
+    const unitPrice = Number(item.pricePerUnit ?? item.price ?? 0);
+    const unitAmount = Math.round(unitPrice * 100);
+
+    return {
+      quantity,
+      price_data: {
+        currency: "usd",
+        unit_amount: unitAmount,
+        product_data: {
+          name: item.name || "Kash Infusions Product"
+        }
+      }
+    };
+  });
+
+  try {
+    const origin = req.get("origin") || `${req.protocol}://${req.get("host") || `localhost:${PORT}`}`;
+    const session = await stripe.checkout.sessions.create({
+      mode: "payment",
+      payment_method_types: ["card"],
+      line_items,
+      success_url: `${origin}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${origin}/checkout/cancel`,
+      customer_email: customerDetails.email || undefined,
+      metadata: {
+        customerName: customerDetails.name || "",
+        customerPhone: customerDetails.phone || ""
+      }
+    });
+
+    res.json({ url: session.url });
+  } catch (error) {
+    console.error("Stripe checkout error:", error);
+    res.status(500).json({ error: error.message || "Unable to start checkout." });
   }
 });
+
+app.get("/checkout/success", (req, res) => {
+  res.sendFile(path.join(__dirname, "..", "checkout-success.html"));
+});
+
+app.get("/checkout/cancel", (req, res) => {
+  res.sendFile(path.join(__dirname, "..", "checkout-cancel.html"));
+});
+
+function startServer() {
+  app.listen(PORT, () => {
+    console.log(`🚀 Server running on port ${PORT}`);
+    console.log(`📍 Environment: ${NODE_ENV}`);
+    if (NODE_ENV === "development") {
+      console.log(`🌐 Local URL: http://localhost:${PORT}`);
+    }
+  });
+}
+
+if (require.main === module) {
+  startServer();
+}
+
+module.exports = { app, startServer };

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Checkout | Kash Infusions</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+      body { background: #f8f7f3; font-family: Arial, sans-serif; }
+      .checkout-card { max-width: 1000px; margin: 3rem auto; background: white; border-radius: 16px; box-shadow: 0 15px 40px rgba(0,0,0,.08); }
+      .summary-item { border-bottom: 1px solid #ececec; padding-bottom: .75rem; margin-bottom: .75rem; }
+      .price { font-weight: 700; color: #2f4b3b; }
+    </style>
+  </head>
+  <body>
+    <div class="container py-5">
+      <div class="checkout-card p-4 p-md-5">
+        <div class="row g-4">
+          <div class="col-lg-7">
+            <h1 class="h3 mb-3">Checkout</h1>
+            <p class="text-muted">Review your order and pay securely with Stripe.</p>
+            <form id="checkout-form" class="mt-4">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label" for="customer-name">Full name</label>
+                  <input id="customer-name" name="customer-name" class="form-control" placeholder="Your full name" required>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label" for="customer-email">Email</label>
+                  <input id="customer-email" name="customer-email" type="email" class="form-control" placeholder="you@example.com" required>
+                </div>
+                <div class="col-12">
+                  <label class="form-label" for="customer-phone">Phone</label>
+                  <input id="customer-phone" name="customer-phone" class="form-control" placeholder="Optional phone number">
+                </div>
+              </div>
+              <button id="pay-button" class="btn btn-dark btn-lg mt-4 w-100" type="submit">Pay now</button>
+            </form>
+          </div>
+          <div class="col-lg-5">
+            <div class="bg-light rounded p-4">
+              <h2 class="h5">Order summary</h2>
+              <div id="checkout-items" class="mt-3"></div>
+              <hr>
+              <div class="d-flex justify-content-between align-items-center">
+                <span>Total</span>
+                <span id="checkout-total" class="price h5 mb-0">$0.00</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="js/api-config.js"></script>
+    <script>
+      const checkoutItemsContainer = document.getElementById('checkout-items');
+      const checkoutTotal = document.getElementById('checkout-total');
+      const form = document.getElementById('checkout-form');
+      const payButton = document.getElementById('pay-button');
+
+      function getCart() {
+        try {
+          const saved = localStorage.getItem('kashinfusions_cart');
+          return saved ? JSON.parse(saved) : [];
+        } catch (error) {
+          return [];
+        }
+      }
+
+      function getCartTotal(items) {
+        return items.reduce((total, item) => total + (Number(item.totalPrice || 0)), 0);
+      }
+
+      function renderCheckout() {
+        const cart = getCart();
+        if (!cart.length) {
+          checkoutItemsContainer.innerHTML = '<p class="text-muted">Your cart is empty.</p>';
+          checkoutTotal.textContent = '$0.00';
+          payButton.disabled = true;
+          return;
+        }
+
+        payButton.disabled = false;
+        const total = getCartTotal(cart);
+        checkoutTotal.textContent = `$${total.toFixed(2)}`;
+
+        checkoutItemsContainer.innerHTML = cart.map((item) => `
+          <div class="summary-item">
+            <div class="d-flex justify-content-between">
+              <strong>${item.name}</strong>
+              <span class="price">$${Number(item.totalPrice || 0).toFixed(2)}</span>
+            </div>
+            <div class="text-muted small">Qty: ${item.quantity || 1}</div>
+          </div>
+        `).join('');
+      }
+
+      form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const cart = getCart();
+        if (!cart.length) {
+          alert('Your cart is empty.');
+          return;
+        }
+
+        payButton.disabled = true;
+        payButton.textContent = 'Processing...';
+
+        try {
+          const response = await fetch(API_CONFIG.endpoint('/create-checkout-session'), {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              cartItems: cart,
+              customerDetails: {
+                name: document.getElementById('customer-name').value,
+                email: document.getElementById('customer-email').value,
+                phone: document.getElementById('customer-phone').value
+              }
+            })
+          });
+
+          const data = await response.json();
+          if (!response.ok) {
+            throw new Error(data.error || 'Checkout could not be started.');
+          }
+
+          if (data.url) {
+            window.location.href = data.url;
+          } else {
+            throw new Error('No checkout URL returned.');
+          }
+        } catch (error) {
+          payButton.disabled = false;
+          payButton.textContent = 'Pay now';
+          alert(error.message || 'Checkout failed.');
+        }
+      });
+
+      renderCheckout();
+    </script>
+  </body>
+</html>
