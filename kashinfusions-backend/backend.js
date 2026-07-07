@@ -421,24 +421,12 @@ function removeFromCart(index) {
   console.log("🗑️ Removed item:", removedItem.name, "| Cart now has", cart.length, "items");
 }
 
-// Update cart badge count in navigation and offcanvas
+// Update cart badge count
 function updateCartBadge() {
-  // Get total number of items (accounting for quantities)
-  const cartItemCount = cart.reduce((total, item) => total + item.quantity, 0);
-  
-  // Update navigation cart counter
-  const cartCountSpan = document.getElementById("cart-count");
-  if (cartCountSpan) {
-    cartCountSpan.textContent = `(${cartItemCount})`;
-  }
-  
-  // Update badges inside offcanvas
   const badges = document.querySelectorAll("#offcanvasCart .badge");
   badges.forEach(badge => {
-    badge.textContent = cartItemCount;
+    badge.textContent = cart.length;
   });
-  
-  console.log("📊 Cart badge updated: " + cartItemCount + " items");
 }
 
 // ==================== CART MANAGEMENT ====================
