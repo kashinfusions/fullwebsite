@@ -58,14 +58,66 @@ function getCurrentProduct() {
   return filename || 'classic_candles';
 }
 
-// Get the pricing config for the current page
-function getPricingConfig() {
+// Get the default pricing config for the current page
+function getDefaultPricingConfig() {
   const product = getCurrentProduct();
   return productPricingConfigs[product] || productPricingConfigs.classic_candles;
 }
 
+function getPricingConfig() {
+  const baseConfig = getDefaultPricingConfig();
+  const derivedConfig = {
+    ...baseConfig,
+    sizeOptions: { ...baseConfig.sizeOptions }
+  };
+
+  if (!Array.isArray(allProducts) || allProducts.length === 0) {
+    return derivedConfig;
+  }
+
+  const currentPage = getCurrentProduct();
+  const pageProducts = allProducts.filter((product) => {
+    const name = String(product?.name || "").toLowerCase();
+    const pageName = currentPage.replace(/_/g, " ");
+    return name.includes(pageName) || name.includes("candle") || name.includes("melt") || name.includes("oil");
+  });
+
+  if (!pageProducts.length) {
+    return derivedConfig;
+  }
+
+  if (!derivedConfig.requiresSize && selectedProduct?.price != null) {
+    derivedConfig.basePrice = Number(selectedProduct.price);
+  }
+
+  Object.entries(derivedConfig.sizeOptions).forEach(([optionLabel, defaultPrice]) => {
+    const label = String(optionLabel).toLowerCase();
+    const matchingProduct = pageProducts.find((product) => {
+      const name = String(product?.name || "").toLowerCase();
+      if (label.includes("sampler") && name.includes("sampler")) return true;
+      if (label.includes("single melt") && name.includes("single")) return true;
+      if (label.includes("pack of 6") && name.includes("pack of 6")) return true;
+      if (label.includes("5ml") && name.includes("5ml")) return true;
+      if (label.includes("10ml") && name.includes("10ml")) return true;
+      if (label.includes("8oz") && name.includes("8oz")) return true;
+      if (label.includes("9oz") && name.includes("9oz")) return true;
+      if (label.includes("10oz") && name.includes("10oz")) return true;
+      if (label.includes("12oz") && name.includes("12oz")) return true;
+      return false;
+    });
+
+    if (matchingProduct && Number(matchingProduct.price) > 0) {
+      derivedConfig.sizeOptions[optionLabel] = Number(matchingProduct.price);
+    } else if (defaultPrice > 0) {
+      derivedConfig.sizeOptions[optionLabel] = Number(defaultPrice);
+    }
+  });
+
+  return derivedConfig;
+}
+
 // Pricing configuration for customizations
-const pricingConfig = getPricingConfig();
+let pricingConfig = getPricingConfig();
 
 // Create a local fallback product object when API loading fails
 function getFallbackProduct() {
@@ -116,6 +168,7 @@ async function initializeProducts() {
     }
 
     allProducts = data;
+    pricingConfig = getPricingConfig();
     console.log("✅ Products loaded:", allProducts);
 
     // Auto-populate the current product if available, otherwise use first or fallback
@@ -145,6 +198,7 @@ function loadProduct(productId) {
     }
   }
   
+  pricingConfig = getPricingConfig();
   console.log("📦 Selected product:", selectedProduct);
   updatePriceDisplay();
 }
@@ -171,36 +225,34 @@ function calculatePrice() {
   const config = getPricingConfig();
   const selections = getCurrentSelections();
   let totalPrice = 0;
-  
-  // Add base price
-  totalPrice += config.basePrice;
-  
-  // Add size/material price (if applicable)
-  if (Object.keys(config.sizeOptions).length > 0) {
-    totalPrice += config.sizeOptions[selections.size] || 0;
+
+  if (!config.requiresSize && selectedProduct?.price != null) {
+    totalPrice = Number(selectedProduct.price);
+  } else if (Object.keys(config.sizeOptions).length > 0) {
+    totalPrice = config.sizeOptions[selections.size] || 0;
+  } else {
+    totalPrice = Number(config.basePrice) || 0;
   }
-  
-  // Add color price (if not "None" and addon price applies)
+
   if (config.addonPrice > 0 && selections.color !== "none") {
     totalPrice += config.addonPrice;
   }
-  
-  // Add scent price (all scents except "0" - Unscented cost addon price)
+
   if (config.addonPrice > 0 && selections.scent !== "0") {
     totalPrice += config.addonPrice;
   }
-  
-  // Add herb price (if not "None" and addon price applies)
+
   if (config.addonPrice > 0 && selections.herb !== "none") {
     totalPrice += config.addonPrice;
   }
-  
+
   return totalPrice;
 }
 
 // Update the price display on the page
 function updatePriceDisplay() {
-  const config = getPricingConfig();
+  pricingConfig = getPricingConfig();
+  const config = pricingConfig;
   const price = calculatePrice();
   const priceDisplay = document.getElementById("product-price-display");
   
